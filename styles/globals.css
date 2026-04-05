@@ -1,0 +1,1266 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --book-page-bg: #fffef6;
+  --book-ink: #2a2318;
+  --story-ink: #2e2618;
+  --book-accent: #4f7d62;
+  --book-accent-hover: #3e6a52;
+  --book-muted: #6a6055;
+  --book-cream: #faf6ed;
+  --book-board-outer: #e4ddd2;
+  --book-radius-outer: clamp(14px, 2.2vw, 22px);
+  --book-radius-inner: clamp(10px, 1.6vw, 16px);
+  --book-board-pad-block: clamp(8px, 1.4vw, 14px);
+  --book-board-pad-inline: clamp(10px, 1.8vw, 16px);
+  --book-shadow-contact: 0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 26px 55px -18px rgba(34, 28, 20, 0.28),
+    0 10px 24px rgba(34, 28, 20, 0.12);
+  --book-shadow-soft: 0 4px 14px rgba(34, 28, 20, 0.08);
+  --book-page-transition: 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* Page-resting shadow — portrait book on a warm surface */
+  --book-page-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.06),
+    0 22px 50px -12px rgba(34, 28, 20, 0.32),
+    0 7px 18px rgba(34, 28, 20, 0.14);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  /* Quiet “tabletop” — not a generic web gradient */
+  background-color: #ebe4d7;
+  background-image: radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      #f5efe4 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 20% 100%,
+      rgba(210, 200, 182, 0.45) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 60% 45% at 85% 95%,
+      rgba(198, 188, 172, 0.35) 0%,
+      transparent 45%
+    );
+  color: var(--book-ink);
+  font-family: var(--font-hebrew), system-ui, sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+button {
+  font: inherit;
+}
+
+.book-board {
+  border-radius: var(--book-radius-outer);
+  padding: var(--book-board-pad-block) var(--book-board-pad-inline);
+  padding-inline-end: calc(var(--book-board-pad-inline) + 4px);
+  max-width: 100%;
+  background: linear-gradient(
+    158deg,
+    #ebe4da 0%,
+    #f3ede3 42%,
+    #dcd5c8 100%
+  );
+  box-shadow: var(--book-shadow-contact), var(--book-shadow-soft);
+}
+
+.book-page-paper {
+  border-radius: var(--book-radius-inner);
+  background: var(--book-page-bg);
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.65) 0%,
+    rgba(255, 255, 255, 0) 28%
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 251, 242, 0.9),
+    inset 0 2px 4px rgba(44, 36, 24, 0.05),
+    0 2px 6px rgba(44, 36, 24, 0.04);
+}
+
+/* Page turn */
+@keyframes book-page-in {
+  from {
+    opacity: 0;
+    transform: perspective(1400px) rotateY(-5deg) translateZ(-8px)
+      scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1400px) rotateY(0deg) translateZ(0) scale(1);
+  }
+}
+
+.book-page-animate {
+  animation: book-page-in var(--book-page-transition) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --book-page-transition: 85ms ease;
+  }
+
+  .book-page-animate {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/*
+ * Navigation — quiet, book-like, non-intrusive.
+ * Feels like a footer caption area, not an app toolbar.
+ */
+.book-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(44, 36, 24, 0.16);
+  border-radius: 8px;
+  color: var(--book-muted);
+  font-size: clamp(0.82rem, 1.8vw, 0.96rem);
+  font-weight: 500;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 18px;
+  cursor: pointer;
+  letter-spacing: 0.025em;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .book-nav-btn:not(:disabled):hover {
+    background: rgba(44, 36, 24, 0.06);
+    color: var(--book-ink);
+    border-color: rgba(44, 36, 24, 0.28);
+  }
+
+  .book-nav-btn:not(:disabled):active {
+    background: rgba(44, 36, 24, 0.1);
+  }
+}
+
+.book-nav-btn:disabled {
+  cursor: default;
+  opacity: 0.22;
+}
+
+.book-nav-btn:focus-visible {
+  outline: 2px solid var(--book-accent);
+  outline-offset: 3px;
+}
+
+/* Arrow variants: slightly larger, bolder direction symbol */
+.book-nav-btn--arrow {
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 8px 14px;
+  min-height: 44px;
+  min-width: 48px;
+}
+
+/* Corner skip buttons: smaller, more ghostly */
+.book-nav-btn--corner {
+  font-size: 1rem;
+  padding: 7px 11px;
+  min-height: 38px;
+  min-width: 38px;
+  opacity: 0.6;
+}
+
+.book-nav-btn--corner:not(:disabled):hover {
+  opacity: 1;
+}
+
+/* Page label — quiet, spaced-out caption */
+.book-nav-label {
+  margin: 0;
+  font-size: clamp(0.72rem, 1.4vw, 0.82rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--book-muted);
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* Keyboard hint — barely visible */
+.book-nav-hint {
+  margin: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--book-muted);
+  opacity: 0.38;
+  text-align: center;
+  direction: rtl;
+}
+
+/*
+ * Story text printed on illustration — literary, breathable, Hebrew.
+ * No boxes. No panels. Text lives IN the painted world.
+ */
+.story-on-art-text {
+  font-size: clamp(0.72rem, 1.22vw, 0.84rem);
+  line-height: 1.9;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: var(--story-ink);
+  /*
+   * Layered text shadow creates a soft halo that lifts type
+   * off the illustration without creating a visible card.
+   */
+  text-shadow:
+    0 0 0.8em rgba(255, 253, 248, 0.82),
+    0 0 0.28em rgba(255, 255, 253, 0.92),
+    0 1px 2px rgba(255, 255, 255, 0.22),
+    0 0 18px rgba(255, 252, 246, 0.38);
+}
+
+.story-on-art-text--finale {
+  font-size: clamp(0.74rem, 1.32vw, 0.88rem);
+  line-height: 1.95;
+  letter-spacing: 0.038em;
+}
+
+.book-page-illu-vignette {
+  border-radius: inherit;
+  box-shadow: inset 0 0 55px rgba(38, 30, 22, 0.05);
+}
+
+.book-spread-half-wash {
+  background: linear-gradient(
+    to top,
+    rgba(255, 253, 248, 0.18) 0%,
+    transparent 42%
+  );
+}
+
+.book-spread-continuous-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 85% 65% at 50% 100%,
+    rgba(255, 252, 247, 0.14) 0%,
+    transparent 58%
+  );
+  z-index: 1;
+}
+
+.book-spread-crease {
+  pointer-events: none;
+  position: absolute;
+  top: 2%;
+  bottom: 2%;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(42, 35, 24, 0.07) 22%,
+    rgba(42, 35, 24, 0.1) 50%,
+    rgba(42, 35, 24, 0.07) 78%,
+    transparent
+  );
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.22);
+  z-index: 15;
+  opacity: 0.65;
+}
+
+/* Final story page — gentle lift, still no boxes */
+.book-finale-vignette {
+  border-radius: inherit;
+  box-shadow: inset 0 0 80px rgba(28, 22, 16, 0.07),
+    inset 0 -18% 70px rgba(255, 253, 246, 0.28);
+}
+
+/* Slightly richer casing on the cover only */
+.book-board.book-board-premium {
+  background: linear-gradient(
+    155deg,
+    #e6dfd4 0%,
+    #f4eee4 38%,
+    #dad2c7 100%
+  );
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.52) inset,
+    0 32px 64px -22px rgba(34, 28, 20, 0.34),
+    0 11px 26px rgba(34, 28, 20, 0.13);
+}
+
+/* Rear cover: flatter, cooler, visually “after the story” */
+.book-board.book-board-rear {
+  background: linear-gradient(
+    158deg,
+    #e0ddd9 0%,
+    #e9e6e2 45%,
+    #d5d2cd 100%
+  );
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.48) inset,
+    0 14px 36px -14px rgba(34, 28, 20, 0.12),
+    0 4px 12px rgba(34, 28, 20, 0.06);
+}
+
+.book-board.book-board-rear .book-page-paper {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75),
+    inset 0 1px 3px rgba(44, 36, 24, 0.04);
+}
+
+/*
+ * ─────────────────────────────────────────────────────────────
+ * RTL Page-Flip Engine
+ * Synced with BookFlipBook.tsx: FLIP_MS = 1150ms.
+ *
+ * Two separate motion models (next vs prev):
+ *   next  – right-edge hinge, rotateY 0 → -180°
+ *   prev  – left-edge hinge,  rotateY 0 → +180°
+ *
+ * Phases: lift (0-20%) · cross (20-80%) · settle (80-100%)
+ *
+ * Variable viewport:
+ *   single pages  → 500 px wide, no spine overlay
+ *   spread pages  → 1000 px wide, spine crease shown
+ * ─────────────────────────────────────────────────────────────
+ */
+.rtl-book-viewport {
+  --rtl-flip-ms: 1150ms;
+  /* Very soft radius — real books have very slightly rounded corner stacks */
+  border-radius: 4px 10px 10px 4px;
+  overflow: hidden;
+  /*
+   * NO width transition here.
+   * viewWidth only changes in finishFlip (post-animation), never during a
+   * visible flip.  A CSS transition would create a lag between the logical
+   * width (React state) and the visual width, causing a mismatch frame.
+   */
+  /*
+   * Page-resting shadow: heavier bottom + right (binding side).
+   * Mimics a book lying on a warm surface under soft overhead light.
+   */
+  box-shadow:
+    var(--book-page-shadow),
+    inset 0 0 0 1px rgba(255, 252, 245, 0.12);
+}
+
+.rtl-book-viewport--flipping {
+  /* box-shadow shifts to a slightly stronger in-motion state during the flip */
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.06),
+    0 28px 58px -12px rgba(34, 28, 20, 0.36),
+    0 8px 20px rgba(34, 28, 20, 0.16),
+    inset 0 0 0 1px rgba(255, 252, 245, 0.1);
+}
+
+/* Thin paper-edge accent on the top and right of the leaf viewport */
+.rtl-book-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 200;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 254, 248, 0.28),
+    inset -1px 0 0 rgba(34, 28, 20, 0.06);
+}
+
+.rtl-book-page-static {
+  pointer-events: auto;
+}
+
+/* Under-page lift animation, split by direction */
+.rtl-book-under--live {
+  animation: rtlBookUnderLiftNext var(--rtl-flip-ms) forwards;
+}
+
+[data-turn="prev"] .rtl-book-under--live {
+  animation-name: rtlBookUnderLiftPrev;
+}
+
+/* lift → cross → settle: עומק צל מתחת לדף הפעיל */
+/* ── Under-page shadow depth (lift → cross → settle) ───────── */
+@keyframes rtlBookUnderLiftNext {
+  0%,
+  100% {
+    filter: brightness(1);
+    box-shadow: inset -14px 0 24px rgba(34, 28, 20, 0.06);
+    animation-timing-function: cubic-bezier(0.3, 0.02, 0.24, 1);
+  }
+  18% {
+    filter: brightness(0.985);
+    box-shadow: inset -28px 0 40px rgba(34, 28, 20, 0.11);
+    animation-timing-function: cubic-bezier(0.38, 0, 0.44, 1);
+  }
+  52% {
+    filter: brightness(0.968);
+    box-shadow: inset -52px 0 66px rgba(34, 28, 20, 0.22);
+    animation-timing-function: cubic-bezier(0.24, 0.1, 0.2, 1);
+  }
+  88% {
+    filter: brightness(0.993);
+    box-shadow: inset -22px 0 36px rgba(34, 28, 20, 0.09);
+  }
+}
+
+@keyframes rtlBookUnderLiftPrev {
+  0%,
+  100% {
+    filter: brightness(1);
+    box-shadow: inset 14px 0 24px rgba(34, 28, 20, 0.06);
+    animation-timing-function: cubic-bezier(0.3, 0.02, 0.24, 1);
+  }
+  16% {
+    filter: brightness(0.985);
+    box-shadow: inset 28px 0 40px rgba(34, 28, 20, 0.11);
+    animation-timing-function: cubic-bezier(0.38, 0, 0.44, 1);
+  }
+  50% {
+    filter: brightness(0.972);
+    box-shadow: inset 54px 0 66px rgba(34, 28, 20, 0.2);
+    animation-timing-function: cubic-bezier(0.26, 0.1, 0.22, 1);
+  }
+  88% {
+    filter: brightness(0.993);
+    box-shadow: inset 20px 0 34px rgba(34, 28, 20, 0.08);
+  }
+}
+
+.rtl-book-under-shade--next {
+  mix-blend-mode: multiply;
+  opacity: 0;
+  background: radial-gradient(
+    130% 125% at 100% 46%,
+    rgba(26, 20, 14, 0.42) 0%,
+    rgba(26, 20, 14, 0.12) 44%,
+    transparent 74%
+  );
+  animation: rtlBookUnderShadeNext var(--rtl-flip-ms) forwards;
+}
+
+.rtl-book-under-shade--prev {
+  mix-blend-mode: multiply;
+  opacity: 0;
+  background: radial-gradient(
+    130% 125% at 0% 46%,
+    rgba(26, 20, 14, 0.42) 0%,
+    rgba(26, 20, 14, 0.12) 44%,
+    transparent 74%
+  );
+  animation: rtlBookUnderShadePrev var(--rtl-flip-ms) forwards;
+}
+
+@keyframes rtlBookUnderShadeNext {
+  0%,
+  100% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.3, 0.02, 0.24, 1);
+  }
+  20% {
+    opacity: 0.28;
+    animation-timing-function: cubic-bezier(0.38, 0, 0.44, 1);
+  }
+  50% {
+    opacity: 0.78;
+    animation-timing-function: cubic-bezier(0.26, 0.08, 0.22, 1);
+  }
+  84% {
+    opacity: 0.16;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes rtlBookUnderShadePrev {
+  0%,
+  100% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.3, 0.02, 0.24, 1);
+  }
+  18% {
+    opacity: 0.26;
+    animation-timing-function: cubic-bezier(0.38, 0, 0.44, 1);
+  }
+  48% {
+    opacity: 0.74;
+    animation-timing-function: cubic-bezier(0.26, 0.08, 0.22, 1);
+  }
+  84% {
+    opacity: 0.14;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.rtl-book-spine-line {
+  z-index: 2;
+}
+
+.rtl-book-spine-line::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 1.5%;
+  bottom: 1.5%;
+  width: 18px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 252, 246, 0.04) 0%,
+    rgba(44, 36, 24, 0.08) 38%,
+    rgba(44, 36, 24, 0.16) 50%,
+    rgba(44, 36, 24, 0.08) 62%,
+    rgba(255, 252, 246, 0.04) 100%
+  );
+  box-shadow: inset 0 0 12px rgba(34, 28, 20, 0.06);
+  border-radius: 2px;
+  opacity: 0.72;
+}
+
+.rtl-book-spine-line--flipping {
+  z-index: 3;
+}
+
+.rtl-book-viewport[data-turn="next"] .rtl-book-spine-line--flipping::before {
+  animation: rtlBookSpineNext var(--rtl-flip-ms) forwards;
+}
+
+.rtl-book-viewport[data-turn="prev"] .rtl-book-spine-line--flipping::before {
+  animation: rtlBookSpinePrev var(--rtl-flip-ms) forwards;
+}
+
+/* next: עומק לכיוון שמאל-שדרה; prev: הדגשה אחרת — אור חוזר משמאל */
+@keyframes rtlBookSpineNext {
+  0%,
+  100% {
+    opacity: 0.72;
+    filter: brightness(1);
+    transform: translateX(-50%) scaleX(1);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  22% {
+    opacity: 0.88;
+    filter: brightness(0.82);
+    transform: translateX(-52%) scaleX(1.04);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.5, 1);
+  }
+  54% {
+    opacity: 1;
+    filter: brightness(0.62);
+    transform: translateX(-50%) scaleX(1.12);
+    animation-timing-function: cubic-bezier(0.28, 0.12, 0.22, 1);
+  }
+  86% {
+    opacity: 0.8;
+    filter: brightness(0.9);
+    transform: translateX(-49%) scaleX(1.02);
+  }
+}
+
+@keyframes rtlBookSpinePrev {
+  0%,
+  100% {
+    opacity: 0.72;
+    filter: brightness(1);
+    transform: translateX(-50%) scaleX(1);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  20% {
+    opacity: 0.9;
+    filter: brightness(0.88);
+    transform: translateX(-48%) scaleX(1.06);
+    animation-timing-function: cubic-bezier(0.38, 0.05, 0.52, 1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(0.66);
+    transform: translateX(-51%) scaleX(1.1);
+    animation-timing-function: cubic-bezier(0.32, 0.1, 0.28, 1);
+  }
+  84% {
+    opacity: 0.78;
+    filter: brightness(0.92);
+    transform: translateX(-50%) scaleX(1.03);
+  }
+}
+
+/* ── Main page-turn keyframes ────────────────────────────────
+   Names are matched in onMainFlipAnimationEnd() in BookFlipBook.tsx.
+   Three phases: lift (0–18%), cross (18–80%), settle (80–100%).
+   Softer lift, gentler landing — not mechanical. ────────────── */
+.rtl-book-flipper-y {
+  pointer-events: none;
+}
+
+.rtl-book-flipper-y--next {
+  transform-origin: 100% 50%;
+  animation: rtlFlipSheetYNext var(--rtl-flip-ms) both;
+}
+
+.rtl-book-flipper-y--prev {
+  transform-origin: 0% 50%;
+  animation: rtlFlipSheetYPrev var(--rtl-flip-ms) both;
+}
+
+@keyframes rtlFlipSheetYNext {
+  0% {
+    /* resting — upper-right corner barely lifts */
+    transform: rotateY(0deg) rotateX(1.5deg) translateZ(2px) translateY(-1px);
+    animation-timing-function: cubic-bezier(0.26, 0.02, 0.18, 1);
+  }
+  18% {
+    /* lift — corner rises, sheet separates from book */
+    transform: rotateY(-22deg) rotateX(5.5deg) translateZ(10px) translateY(-3px);
+    animation-timing-function: cubic-bezier(0.36, 0.02, 0.4, 1);
+  }
+  50% {
+    /* cross — page nearly edge-on, spine passes */
+    transform: rotateY(-94deg) rotateX(3deg) translateZ(6px) translateY(-1px);
+    animation-timing-function: cubic-bezier(0.22, 0.06, 0.18, 1);
+  }
+  80% {
+    /* settle entry — page glides toward landing */
+    transform: rotateY(-162deg) rotateX(0.7deg) translateZ(1.5px) translateY(0);
+    animation-timing-function: cubic-bezier(0.12, 0.72, 0.18, 0.98);
+  }
+  100% {
+    /* land — soft touch-down, no snap */
+    transform: rotateY(-180deg) rotateX(0deg) translateZ(0.5px) translateY(0);
+  }
+}
+
+@keyframes rtlFlipSheetYPrev {
+  0% {
+    /* resting — upper-left corner barely lifts */
+    transform: rotateY(0deg) rotateX(1.5deg) translateZ(2px) translateY(-1px)
+      translateX(1.5px);
+    animation-timing-function: cubic-bezier(0.26, 0.02, 0.18, 1);
+  }
+  16% {
+    /* lift from left — earlier peak, characteristically different from next */
+    transform: rotateY(24deg) rotateX(6.5deg) translateZ(12px) translateY(-3px)
+      translateX(-2px);
+    animation-timing-function: cubic-bezier(0.38, 0.02, 0.42, 1);
+  }
+  48% {
+    /* cross — crossing the spine from the left */
+    transform: rotateY(100deg) rotateX(3.5deg) translateZ(7px) translateY(-1px)
+      translateX(-1px);
+    animation-timing-function: cubic-bezier(0.24, 0.06, 0.2, 1);
+  }
+  79% {
+    /* settle entry */
+    transform: rotateY(165deg) rotateX(0.8deg) translateZ(1.5px) translateY(0)
+      translateX(0);
+    animation-timing-function: cubic-bezier(0.14, 0.72, 0.2, 0.98);
+  }
+  100% {
+    transform: rotateY(180deg) rotateX(0deg) translateZ(0.5px) translateY(0);
+  }
+}
+
+/* --- turning-sheet: שכבות נפרדות ל-next / prev --- */
+.turning-sheet {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.turning-sheet__twist,
+.turning-sheet__bow {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+}
+
+/* next: upper-right corner leads */
+.turning-sheet--next .turning-sheet__twist {
+  transform-origin: 96% 4%;
+  animation: turningSheetTwistNext var(--rtl-flip-ms) forwards;
+}
+
+.turning-sheet--next .turning-sheet__bow {
+  transform-origin: 98% 2%;
+  animation: turningSheetBowNext var(--rtl-flip-ms) forwards;
+}
+
+@keyframes turningSheetTwistNext {
+  0% {
+    transform: rotateY(0deg) skewY(0deg) rotateZ(0deg);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  18% {
+    transform: rotateY(-7deg) skewY(-1.35deg) rotateZ(-0.6deg);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.5, 1);
+  }
+  50% {
+    transform: rotateY(-2.8deg) skewY(0.45deg) rotateZ(0.35deg);
+    animation-timing-function: cubic-bezier(0.3, 0.1, 0.25, 1);
+  }
+  78% {
+    transform: rotateY(1.2deg) skewY(0.12deg) rotateZ(0.1deg);
+    animation-timing-function: cubic-bezier(0.22, 0.5, 0.3, 1);
+  }
+  100% {
+    transform: rotateY(0deg) skewY(0deg) rotateZ(0deg);
+  }
+}
+
+@keyframes turningSheetBowNext {
+  0% {
+    transform: rotateX(0deg) scaleX(1);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  20% {
+    transform: rotateX(7.5deg) scaleX(0.988);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.52, 1);
+  }
+  52% {
+    transform: rotateX(4.6deg) scaleX(1.006);
+    animation-timing-function: cubic-bezier(0.28, 0.1, 0.22, 1);
+  }
+  84% {
+    transform: rotateX(1.2deg) scaleX(1.002);
+    animation-timing-function: cubic-bezier(0.2, 0.55, 0.28, 1);
+  }
+  100% {
+    transform: rotateX(0deg) scaleX(1);
+  }
+}
+
+/* prev: upper-left corner leads — different Z-tilt, not a mirror of next */
+.turning-sheet--prev .turning-sheet__twist {
+  transform-origin: 5% 5%;
+  animation: turningSheetTwistPrev var(--rtl-flip-ms) forwards;
+}
+
+.turning-sheet--prev .turning-sheet__bow {
+  transform-origin: 2% 4%;
+  animation: turningSheetBowPrev var(--rtl-flip-ms) forwards;
+}
+
+@keyframes turningSheetTwistPrev {
+  0% {
+    transform: rotateY(0deg) skewY(0deg) rotateZ(0deg);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  16% {
+    transform: rotateY(8deg) skewY(1.5deg) rotateZ(1.1deg);
+    animation-timing-function: cubic-bezier(0.42, 0.05, 0.52, 1);
+  }
+  48% {
+    transform: rotateY(3.2deg) skewY(-0.5deg) rotateZ(-0.4deg);
+    animation-timing-function: cubic-bezier(0.32, 0.1, 0.28, 1);
+  }
+  76% {
+    transform: rotateY(-1.4deg) skewY(-0.2deg) rotateZ(-0.15deg);
+    animation-timing-function: cubic-bezier(0.22, 0.5, 0.3, 1);
+  }
+  100% {
+    transform: rotateY(0deg) skewY(0deg) rotateZ(0deg);
+  }
+}
+
+@keyframes turningSheetBowPrev {
+  0% {
+    transform: rotateX(0deg) scaleX(1);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  18% {
+    transform: rotateX(5.5deg) scaleX(1.014);
+    animation-timing-function: cubic-bezier(0.44, 0.02, 0.5, 1);
+  }
+  50% {
+    transform: rotateX(5deg) scaleX(0.992);
+    animation-timing-function: cubic-bezier(0.3, 0.1, 0.25, 1);
+  }
+  80% {
+    transform: rotateX(1.8deg) scaleX(1.003);
+    animation-timing-function: cubic-bezier(0.2, 0.55, 0.28, 1);
+  }
+  100% {
+    transform: rotateX(0deg) scaleX(1);
+  }
+}
+
+/* אשליית קימור בקצה — מסיכה דינמית + הדגשה */
+.turning-sheet__curl {
+  transform-style: preserve-3d;
+  z-index: 3;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(
+    105deg,
+    black 0%,
+    black 62%,
+    transparent 78%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    105deg,
+    black 0%,
+    black 62%,
+    transparent 78%,
+    transparent 100%
+  );
+}
+
+.turning-sheet--next .turning-sheet__curl--next {
+  transform-origin: 100% 0;
+  background: linear-gradient(
+    118deg,
+    transparent 52%,
+    rgba(44, 36, 24, 0.12) 72%,
+    rgba(255, 252, 246, 0.3) 78%,
+    rgba(44, 36, 24, 0.07) 84%,
+    transparent 90%
+  );
+  animation: turningSheetCurlNext var(--rtl-flip-ms) forwards;
+}
+
+.turning-sheet--prev .turning-sheet__curl--prev {
+  transform-origin: 0% 0;
+  background: linear-gradient(
+    242deg,
+    transparent 52%,
+    rgba(44, 36, 24, 0.14) 72%,
+    rgba(255, 252, 246, 0.35) 78%,
+    rgba(44, 36, 24, 0.08) 84%,
+    transparent 90%
+  );
+  -webkit-mask-image: linear-gradient(
+    255deg,
+    black 0%,
+    black 62%,
+    transparent 78%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    255deg,
+    black 0%,
+    black 62%,
+    transparent 78%,
+    transparent 100%
+  );
+  animation: turningSheetCurlPrev var(--rtl-flip-ms) forwards;
+}
+
+@keyframes turningSheetCurlNext {
+  0% {
+    opacity: 0;
+    transform: translateZ(2px) scaleX(0.94) skewY(-0.5deg);
+    clip-path: inset(0 0 0 0);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  22% {
+    opacity: 0.85;
+    transform: translateZ(5px) scaleX(1.02) skewY(-1.4deg);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 88% 0, 100% 8%, 100% 92%, 78% 100%, 0 100%);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.52, 1);
+  }
+  54% {
+    opacity: 1;
+    transform: translateZ(3px) scaleX(1.06) skewY(-0.6deg);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 62% 0, 100% 14%, 100% 86%, 48% 100%, 0 100%);
+    animation-timing-function: cubic-bezier(0.28, 0.1, 0.22, 1);
+  }
+  88% {
+    opacity: 0.35;
+    transform: translateZ(1px) scaleX(1) skewY(0deg);
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateZ(0.5px) scaleX(1) skewY(0deg);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes turningSheetCurlPrev {
+  0% {
+    opacity: 0;
+    transform: translateZ(2px) scaleX(0.94) skewY(0.5deg);
+    clip-path: inset(0 0 0 0);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  22% {
+    opacity: 0.85;
+    transform: translateZ(5px) scaleX(1.02) skewY(1.4deg);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 12% 0, 0 8%, 0 92%, 22% 100%, 100% 100%);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.52, 1);
+  }
+  54% {
+    opacity: 1;
+    transform: translateZ(3px) scaleX(1.06) skewY(0.65deg);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 38% 0, 0 14%, 0 86%, 52% 100%, 100% 100%);
+    animation-timing-function: cubic-bezier(0.28, 0.1, 0.22, 1);
+  }
+  88% {
+    opacity: 0.35;
+    transform: translateZ(1px) scaleX(1) skewY(0deg);
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateZ(0.5px) scaleX(1) skewY(0deg);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.turning-sheet__shadow--next {
+  transform-style: preserve-3d;
+  transform-origin: 100% 50%;
+  background: radial-gradient(
+    92% 105% at 86% 46%,
+    rgba(16, 12, 8, 0.55) 0%,
+    rgba(16, 12, 8, 0.14) 44%,
+    transparent 74%
+  );
+  filter: blur(22px);
+  transform: translateZ(-32px) scale(0.95);
+  opacity: 0;
+  animation: turningSheetCastNext var(--rtl-flip-ms) forwards;
+}
+
+.turning-sheet__shadow--prev {
+  transform-style: preserve-3d;
+  transform-origin: 0% 50%;
+  background: radial-gradient(
+    92% 105% at 14% 46%,
+    rgba(16, 12, 8, 0.55) 0%,
+    rgba(16, 12, 8, 0.14) 44%,
+    transparent 74%
+  );
+  filter: blur(22px);
+  transform: translateZ(-32px) scale(0.95);
+  opacity: 0;
+  animation: turningSheetCastPrev var(--rtl-flip-ms) forwards;
+}
+
+@keyframes turningSheetCastNext {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateZ(-18px) scale(0.9);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  24% {
+    opacity: 0.42;
+    transform: translateZ(-34px) scale(0.98);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.52, 1);
+  }
+  52% {
+    opacity: 0.74;
+    transform: translateZ(-46px) scale(1.06);
+    animation-timing-function: cubic-bezier(0.28, 0.1, 0.22, 1);
+  }
+  86% {
+    opacity: 0.2;
+    transform: translateZ(-22px) scale(0.94);
+  }
+}
+
+@keyframes turningSheetCastPrev {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateZ(-18px) scale(0.9);
+    animation-timing-function: cubic-bezier(0.34, 0.02, 0.28, 1);
+  }
+  26% {
+    opacity: 0.38;
+    transform: translateZ(-30px) scale(0.96);
+    animation-timing-function: cubic-bezier(0.42, 0.05, 0.5, 1);
+  }
+  50% {
+    opacity: 0.72;
+    transform: translateZ(-44px) scale(1.08);
+    animation-timing-function: cubic-bezier(0.3, 0.1, 0.25, 1);
+  }
+  88% {
+    opacity: 0.18;
+    transform: translateZ(-20px) scale(0.93);
+  }
+}
+
+.turning-sheet__front,
+.turning-sheet__back {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.turning-sheet__front {
+  transform: translateZ(1.2px);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 1px rgba(44, 36, 24, 0.085),
+    inset -14px 0 30px rgba(44, 36, 24, 0.075),
+    inset 12px 0 20px rgba(255, 252, 245, 0.34),
+    -4px 0 8px rgba(0, 0, 0, 0.055),
+    1px 0 0 rgba(255, 255, 255, 0.38);
+}
+
+.turning-sheet__front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    rgba(255, 252, 246, 0.26) 0%,
+    transparent 20%,
+    transparent 46%,
+    rgba(44, 36, 24, 0.025) 70%,
+    rgba(44, 36, 24, 0.07) 100%
+  );
+}
+
+/* אחורה: הברק נדחף משמאל — תחושת “דף חוזר מכיוון שמאל” */
+.turning-sheet__front--prev::after {
+  background: linear-gradient(
+    255deg,
+    rgba(255, 252, 246, 0.2) 0%,
+    transparent 24%,
+    transparent 50%,
+    rgba(44, 36, 24, 0.04) 72%,
+    rgba(44, 36, 24, 0.09) 100%
+  );
+}
+
+.turning-sheet__back {
+  transform: rotateY(180deg) translateZ(0.75px);
+  border-radius: 2px;
+  background:
+    linear-gradient(
+      168deg,
+      rgba(255, 248, 236, 0.08) 0%,
+      transparent 45%
+    ),
+    linear-gradient(
+      148deg,
+      #b8ae9c 0%,
+      #d8d0c2 32%,
+      #c9bfb0 58%,
+      #a69b8c 100%
+    );
+  box-shadow:
+    inset 0 0 48px rgba(44, 36, 24, 0.18),
+    inset 16px 0 36px rgba(0, 0, 0, 0.08),
+    inset -8px 0 22px rgba(255, 252, 245, 0.1);
+}
+
+.turning-sheet__highlight {
+  transform: translateZ(3.5px);
+  transform-style: preserve-3d;
+  mix-blend-mode: soft-light;
+  background: linear-gradient(
+    124deg,
+    transparent 0%,
+    rgba(255, 252, 246, 0) 38%,
+    rgba(255, 250, 242, 0.5) 50%,
+    rgba(255, 252, 246, 0) 62%,
+    rgba(44, 36, 24, 0.07) 100%
+  );
+  background-size: 220% 220%;
+  opacity: 0;
+}
+
+.turning-sheet--next .turning-sheet__highlight--next {
+  animation: turningHighlightNext var(--rtl-flip-ms) forwards;
+}
+
+.turning-sheet--prev .turning-sheet__highlight--prev {
+  animation: turningHighlightPrev var(--rtl-flip-ms) forwards;
+}
+
+@keyframes turningHighlightNext {
+  0% {
+    background-position: 92% 35%;
+    opacity: 0.25;
+  }
+  42% {
+    background-position: 38% 52%;
+    opacity: 0.88;
+  }
+  100% {
+    background-position: -8% 58%;
+    opacity: 0.12;
+  }
+}
+
+@keyframes turningHighlightPrev {
+  0% {
+    background-position: 8% 35%;
+    opacity: 0.25;
+  }
+  42% {
+    background-position: 62% 52%;
+    opacity: 0.88;
+  }
+  100% {
+    background-position: 108% 58%;
+    opacity: 0.12;
+  }
+}
+
+/*
+ * ═══════════════════════════════════════════════════════════════
+ * FULL-BLEED PAGE LEAF CONTAINERS
+ *
+ * book-leaf-single  → single page   (500 × 700 px)
+ * book-leaf-spread  → open spread   (1000 × 700 px)
+ *
+ * These intentionally have NO background, NO padding, NO border-radius.
+ * The page illustration provides the background directly.
+ * BookBoard chrome is overridden below so each template can render
+ * full-bleed without multiple nested boxes.
+ * ═══════════════════════════════════════════════════════════════
+ */
+.book-leaf-single,
+.book-leaf-spread {
+  position: relative;
+  overflow: hidden;
+}
+
+.book-leaf-single {
+  width: 500px;
+  height: 700px;
+}
+
+.book-leaf-spread {
+  width: 1000px;
+  height: 700px;
+}
+
+/* ── Strip BookBoard outer shell (padding, background, shadow, radius) ── */
+.book-leaf-single > .book-board,
+.book-leaf-spread > .book-board {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Hide the spine accent widget — not needed in full-bleed context */
+.book-leaf-single .book-spine,
+.book-leaf-spread .book-spine {
+  display: none;
+}
+
+/* ── Strip book-page-paper inner chrome ── */
+.book-leaf-single .book-page-paper,
+.book-leaf-spread .book-page-paper {
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  height: 100% !important;
+}
+
+/*
+ * Force the illustration container (first child of book-page-paper) to fill
+ * the full leaf height regardless of its Tailwind aspect-ratio class.
+ * Higher specificity (0,2,1) beats Tailwind's (0,1,0).
+ */
+.book-leaf-single .book-page-paper > *,
+.book-leaf-spread .book-page-paper > * {
+  height: 100% !important;
+  aspect-ratio: auto !important;
+  min-height: 0 !important;
+  border-radius: 0 !important;
+  max-width: 100% !important;
+}
+
+/*
+ * ── Responsive book-stage scaling layer ─────────────────────
+ *
+ * Three-layer structure:
+ *
+ *   book-scale-outer     — full-width measurement wrapper (no visual role).
+ *                          ResizeObserver reads its clientWidth to derive scale.
+ *
+ *   book-scale-presenter — takes the VISUAL (scaled) book footprint in the
+ *                          document flow; centred via margin:auto so the book
+ *                          is always horizontally centred regardless of scale.
+ *                          NO transition on width/height — dimensions are set
+ *                          in the same React commit as viewWidth changes, so
+ *                          any CSS transition here would create a visible lag
+ *                          between the logical stage and its visual footprint.
+ *
+ *   book-flip-shell      — the full logical stage (500/1000 × 700 px),
+ *                          absolutely positioned inside the presenter and
+ *                          scaled down with transform:scale() when needed.
+ *                          All internal px values, 3-D transforms, and pointer
+ *                          events remain in the unscaled coordinate space.
+ *                          Width transition is active ONLY when not flipping
+ *                          (for the jumpTo direct-navigation path). During a
+ *                          flip the inline style sets transition:none so the
+ *                          shell and the viewport change width atomically.
+ */
+.book-scale-outer {
+  /*
+   * align-self: stretch overrides the parent flex container's items-center,
+   * guaranteeing that this element always fills the full cross-axis (horizontal)
+   * width of its flex parent — which is what the ResizeObserver must measure.
+   * Without this, `width: 100%` can resolve to 0 inside a flex-col items-center
+   * parent if the element has no content to establish an intrinsic width before
+   * the first React paint.
+   */
+  width: 100%;
+  align-self: stretch;
+}
+
+.book-scale-presenter {
+  position: relative;
+  margin: 0 auto;
+  /*
+   * No transition here — the presenter dimensions are updated in the same
+   * React commit as viewWidth/scale, so any delay would cause the visual
+   * footprint to lag behind the logical stage.
+   *
+   * No overflow:hidden — the 3-D page can extend slightly beyond the logical
+   * bounds during a flip; clipping happens only at rtl-book-viewport level.
+   */
+}
+
+/* ── Logical flip stage (position: absolute via inline style) ── */
+.book-flip-shell {
+  /*
+   * NO width transition.  The shell width is only ever set by React state
+   * (viewWidth), which only changes in finishFlip after the animation.
+   * Any CSS transition here would cause the shell to lag behind the presenter
+   * dimensions (which update instantly from React inline style), producing
+   * a visible mismatch frame.
+   */
+}
+
+/* שולי דפדוף RTL (מעל הספר, בלי transform) */
+.flip-edge-zone {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.flip-edge-zone:focus-visible {
+  outline: 2px solid var(--book-accent);
+  outline-offset: 2px;
+}
