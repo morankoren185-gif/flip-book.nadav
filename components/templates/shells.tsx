@@ -57,8 +57,8 @@ export function CoverFrame({ children }: { children: ReactNode }) {
     <div
       style={{
         position: "relative",
-        width: 500,
-        height: 700,
+        width: 600,
+        height: 800,
         overflow: "hidden"
       }}
     >
@@ -75,8 +75,8 @@ export function BackCoverFrame({ children }: { children: ReactNode }) {
     <div
       style={{
         position: "relative",
-        width: 500,
-        height: 700,
+        width: 600,
+        height: 800,
         overflow: "hidden"
       }}
     >
@@ -102,13 +102,13 @@ export function SinglePageFrame({
   children?: ReactNode;
 }) {
   return (
-    <div style={{ position: "relative", width: 1000, height: 700, overflow: "hidden" }}>
+    <div style={{ position: "relative", width: 1200, height: 800, overflow: "hidden" }}>
       <BookImage
         src={src}
         alt=""
         fill
         style={{ objectFit: "cover", objectPosition }}
-        sizes="1000px"
+        sizes="1200px"
       />
       {children}
     </div>
@@ -133,8 +133,8 @@ export function SpreadContinuousFrame({
     <div
       style={{
         position: "relative",
-        width: 1000,
-        height: 700,
+        width: 1200,
+        height: 800,
         overflow: "hidden"
       }}
       dir="rtl"
@@ -146,7 +146,7 @@ export function SpreadContinuousFrame({
         fill
         className="object-cover"
         style={{ objectPosition, borderRadius: 0 }}
-        sizes="1000px"
+        sizes="1200px"
       />
       <div className="book-spread-crease" aria-hidden />
       {children}
@@ -178,8 +178,8 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
         position: "relative",
         display: "flex",
         flexDirection: "row-reverse",
-        width: 1000,
-        height: 700
+        width: 1200,
+        height: 800
       }}
       dir="rtl"
       lang="he"
@@ -189,8 +189,8 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
         style={{
           position: "relative",
           flex: "none",
-          width: 500,
-          height: 700,
+          width: 600,
+          height: 800,
           overflow: "hidden",
           backgroundColor: right.background
         }}
@@ -203,7 +203,7 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
             objectFit: right.objectFit ?? "cover",
             objectPosition: right.objectPosition ?? "50% 50%"
           }}
-          sizes="500px"
+          sizes="600px"
         />
         {right.children}
       </div>
@@ -213,8 +213,8 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
         style={{
           position: "relative",
           flex: "none",
-          width: 500,
-          height: 700,
+          width: 600,
+          height: 800,
           overflow: "hidden",
           borderRight: "1px solid rgba(0,0,0,0.07)",
           backgroundColor: left.background
@@ -228,7 +228,7 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
             objectFit: left.objectFit ?? "cover",
             objectPosition: left.objectPosition ?? "50% 50%"
           }}
-          sizes="500px"
+          sizes="600px"
         />
         {left.children}
       </div>

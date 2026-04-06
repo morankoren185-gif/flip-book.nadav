@@ -79,12 +79,11 @@ export const bookData = [
   },
 
   {
-    id: "6-7",
-    type: "spread",
-    template: "spread-06-07",
-    rightImage: "/images/spread-06-07-right.png.png",
-    leftImage: "/images/spread-06-07-left.png.png",
-    rightText: `לפעמים פליצה ממש מגזימה.
+    id: 6,
+    type: "single",
+    template: "page-06",
+    image: "/images/spread-06-07-right.png.png",
+    text: `לפעמים פליצה ממש מגזימה.
 היא אומרת לנדב לעשות שטויות,
 כמו לתופף על השולחן באמצע שיעור -
 שלוש פעמים בדיוק.
@@ -94,15 +93,22 @@ export const bookData = [
 אם לא תעשה את זה -
 אולי תפסיד בכדורגל בהפסקה,
 וכולם יכעסו עליך!"`,
-    leftText: `והפעם פליצה אומרת לו
+    layout: "bottom-left"
+  },
+
+  {
+    id: 7,
+    type: "single",
+    template: "page-07",
+    image: "/images/spread-06-07-left.png.png",
+    text: `והפעם פליצה אומרת לו
 שהוא חייב ללחוש:
 "הכול יהיה בסדר"
 בדיוק ארבע פעמים.
 "אם לא תעשה את זה," לוחשת פליצה,
 "אולי יקרה משהו רע..."
 ונדב מרגיש דאגה בבטן.`,
-    rightLayout: "bottom-right",
-    leftLayout: "bottom-left"
+    layout: "bottom-right"
   },
 
   {

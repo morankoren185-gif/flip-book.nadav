@@ -12,22 +12,23 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         src={page.image}
         alt={page.title}
         fill
-        style={{ objectFit: "contain", objectPosition: "50% 58%" }}
-        sizes="500px"
+        className="object-cover"
+        style={{ objectPosition: "50% 42%" }}
+        sizes="600px"
         priority
       />
 
-      {/* Title — top */}
+      {/* Title — above character */}
       <div
         style={{
           position: "absolute",
-          top: "6%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "88%",
+          top: "5%",
+          left: 0,
+          right: 0,
           textAlign: "center",
           direction: "rtl",
-          zIndex: 10
+          zIndex: 10,
+          padding: "0 8%"
         }}
       >
         <h1
@@ -47,18 +48,17 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         </h1>
       </div>
 
-      {/* Subtitle — middle */}
+      {/* Subtitle — above character */}
       <div
         style={{
           position: "absolute",
-          top: "50%",
-          transform: "translateY(-50%)",
-          left: "50%",
-          marginLeft: "-44%",
-          width: "88%",
+          top: "18%",
+          left: 0,
+          right: 0,
           textAlign: "center",
           direction: "rtl",
-          zIndex: 10
+          zIndex: 10,
+          padding: "0 8%"
         }}
       >
         <p
@@ -82,12 +82,12 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         style={{
           position: "absolute",
           bottom: "5%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "80%",
+          left: 0,
+          right: 0,
           textAlign: "center",
           direction: "rtl",
-          zIndex: 10
+          zIndex: 10,
+          padding: "0 8%"
         }}
       >
         <p
