@@ -1,151 +1,229 @@
 "use client";
 
-import type { ReactNode } from "react";
-import type { BookPageSingle, BookPageSpread } from "@/types/book";
-import { BookBoard } from "@/components/BookBoard";
+import type { CSSProperties, ReactNode } from "react";
+import type { PageLayout } from "@/types/book";
 import { BookImage } from "@/components/BookImage";
-import { isStoryFinalePage } from "@/lib/readingTune";
 
-const defaultSingleBoard =
-  "mx-auto w-full max-w-[min(440px,93vw)] md:max-w-[min(520px,48vw)] lg:max-w-[min(480px,44vw)]";
+// ─────────────────────────────────────────────────────────
+// Layout position map
+// All text containers: position:absolute, zIndex:10
+// ─────────────────────────────────────────────────────────
+export type TextLayout = PageLayout | "center-right" | "center-left";
 
-const defaultSpreadBoard =
-  "mx-auto w-full max-w-[min(1020px,97vw)] md:max-w-[min(1080px,96vw)]";
+export function textStyle(layout: TextLayout): CSSProperties {
+  const base: CSSProperties = { position: "absolute", zIndex: 10 };
+  switch (layout) {
+    case "top-right":
+      return { ...base, top: "4%", right: "3%", maxWidth: "min(13rem,40%)" };
+    case "top-left":
+      return { ...base, top: "4%", left: "3%", maxWidth: "min(13rem,40%)" };
+    case "bottom-right":
+      return { ...base, bottom: "5%", right: "3%", maxWidth: "min(13rem,40%)" };
+    case "bottom-left":
+      return { ...base, bottom: "5%", left: "3%", maxWidth: "min(13rem,40%)" };
+    case "center":
+      return {
+        ...base,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%,-50%)",
+        maxWidth: "min(16rem,50%)",
+        textAlign: "center"
+      };
+    case "center-right":
+      return {
+        ...base,
+        top: "50%",
+        right: "3%",
+        transform: "translateY(-50%)",
+        maxWidth: "min(13rem,40%)"
+      };
+    case "center-left":
+      return {
+        ...base,
+        top: "50%",
+        left: "3%",
+        transform: "translateY(-50%)",
+        maxWidth: "min(13rem,40%)"
+      };
+  }
+}
 
-type SingleArtPageProps = {
-  page: BookPageSingle;
-  objectPosition: string;
-  boardClassName?: string;
-  /** Optional extra layers above image, below vignette (z-0 — keep below z-1). */
-  underVignette?: ReactNode;
-  children: ReactNode;
-};
-
-export function SingleArtPage({
-  page,
-  objectPosition,
-  boardClassName = defaultSingleBoard,
-  underVignette,
-  children
-}: SingleArtPageProps) {
-  const isFinale = isStoryFinalePage(page.id);
+// ─────────────────────────────────────────────────────────
+// CoverFrame — 500 × 700, closed book appearance
+// ─────────────────────────────────────────────────────────
+export function CoverFrame({ children }: { children: ReactNode }) {
   return (
-    <BookBoard className={boardClassName}>
-      <div
-        className={`relative aspect-[3/4] w-full overflow-hidden rounded-[var(--book-radius-inner)] bg-[var(--book-page-bg)] ${isFinale ? "book-finale-page" : ""}`.trim()}
-      >
-        <BookImage
-          src={page.image}
-          alt=""
-          fill
-          className="object-contain object-center"
-          style={{ objectPosition }}
-          sizes="500px"
-        />
-        {underVignette}
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] book-page-illu-vignette"
-          aria-hidden
-        />
-        {isFinale ? (
-          <div
-            className="book-finale-vignette pointer-events-none absolute inset-0 z-[2]"
-            aria-hidden
-          />
-        ) : null}
-        {children}
-      </div>
-    </BookBoard>
+    <div
+      style={{
+        position: "relative",
+        width: 500,
+        height: 700,
+        overflow: "hidden"
+      }}
+    >
+      {children}
+    </div>
   );
 }
 
+// ─────────────────────────────────────────────────────────
+// BackCoverFrame — 500 × 700, closed book appearance
+// ─────────────────────────────────────────────────────────
+export function BackCoverFrame({ children }: { children: ReactNode }) {
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: 500,
+        height: 700,
+        overflow: "hidden"
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// SinglePageFrame — 1000 × 700, full-bleed landscape illustration
+//
+// The landscape image spans the full 1000×700 area (same as
+// SpreadContinuousFrame).  Text floats over the illustration in
+// dead zones via textStyle() absolute positioning.
+// ─────────────────────────────────────────────────────────
+export function SinglePageFrame({
+  src,
+  objectPosition = "50% 50%",
+  children
+}: {
+  src: string;
+  objectPosition?: string;
+  children?: ReactNode;
+}) {
+  return (
+    <div style={{ position: "relative", width: 1000, height: 700, overflow: "hidden" }}>
+      <BookImage
+        src={src}
+        alt=""
+        fill
+        style={{ objectFit: "cover", objectPosition }}
+        sizes="1000px"
+      />
+      {children}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// SpreadContinuousFrame — 1000 × 700, one landscape image
+// ─────────────────────────────────────────────────────────
 type SpreadContinuousFrameProps = {
-  page: BookPageSpread;
-  objectPosition: string;
-  boardClassName?: string;
-  /** Full-bleed washes under text grid */
-  atmosphere?: ReactNode;
-  /** Two grid cells in reading order: first = right page, second = left page */
-  cells: [ReactNode, ReactNode];
+  image: string;
+  objectPosition?: string;
+  children?: ReactNode;
 };
 
 export function SpreadContinuousFrame({
-  page,
-  objectPosition,
-  boardClassName = defaultSpreadBoard,
-  atmosphere,
-  cells
+  image,
+  objectPosition = "50% 50%",
+  children
 }: SpreadContinuousFrameProps) {
   return (
-    <BookBoard className={boardClassName}>
-      <div
-        className="relative aspect-[16/10] w-full overflow-hidden rounded-[var(--book-radius-inner)] bg-[var(--book-page-bg)] sm:aspect-[2/1.05] lg:aspect-[2/1]"
-        dir="rtl"
-        lang="he"
-      >
-        <BookImage
-          src={page.image!}
-          alt=""
-          fill
-          className="object-contain object-center"
-          style={{ objectPosition }}
-          sizes="1000px"
-        />
-        {atmosphere}
-        <div className="book-spread-crease" aria-hidden />
-        <div className="absolute inset-0 z-[2] grid grid-cols-2" dir="rtl">
-          <div className="relative min-h-0 min-w-0">{cells[0]}</div>
-          <div className="relative min-h-0 min-w-0">{cells[1]}</div>
-        </div>
-      </div>
-    </BookBoard>
+    <div
+      style={{
+        position: "relative",
+        width: 1000,
+        height: 700,
+        overflow: "hidden"
+      }}
+      dir="rtl"
+      lang="he"
+    >
+      <BookImage
+        src={image}
+        alt=""
+        fill
+        className="object-cover"
+        style={{ objectPosition, borderRadius: 0 }}
+        sizes="1000px"
+      />
+      <div className="book-spread-crease" aria-hidden />
+      {children}
+    </div>
   );
 }
 
-type SpreadDualFrameProps = {
-  boardClassName?: string;
-  right: { src: string; position: string; overlay?: ReactNode; content: ReactNode };
-  left: { src: string; position: string; overlay?: ReactNode; content: ReactNode };
+// ─────────────────────────────────────────────────────────
+// SpreadSplitFrame — 1000 × 700, two portrait images
+// Container is flex row-reverse: first child = right page (screen RIGHT)
+// ─────────────────────────────────────────────────────────
+type SpreadHalf = {
+  src: string;
+  objectPosition?: string;
+  children?: ReactNode;
 };
 
-export function SpreadDualFrame({
-  boardClassName = defaultSpreadBoard,
-  right,
-  left
-}: SpreadDualFrameProps) {
+type SpreadSplitFrameProps = {
+  right: SpreadHalf;
+  left: SpreadHalf;
+};
+
+export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
   return (
-    <BookBoard className={boardClassName}>
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "row-reverse",
+        width: 1000,
+        height: 700
+      }}
+      dir="rtl"
+      lang="he"
+    >
+      {/* Right page — visually on the right in row-reverse */}
       <div
-        className="relative flex min-h-[220px] w-full flex-row overflow-hidden rounded-[var(--book-radius-inner)] sm:min-h-[280px] md:aspect-[2/1.05] lg:aspect-[2/1] md:min-h-0"
-        dir="rtl"
-        lang="he"
+        style={{
+          position: "relative",
+          flex: "none",
+          width: 500,
+          height: 700,
+          overflow: "hidden"
+        }}
       >
-        <div className="relative min-h-[220px] flex-1 basis-1/2 overflow-hidden bg-[var(--book-page-bg)] border-e border-black/[0.04] sm:min-h-[280px] md:min-h-0">
-          <BookImage
-            src={right.src}
-            alt=""
-            fill
-            className="object-contain object-center"
-            style={{ objectPosition: right.position }}
-            sizes="46vw"
-          />
-          {right.overlay}
-          {right.content}
-        </div>
-        <div className="relative min-h-[220px] flex-1 basis-1/2 overflow-hidden bg-[var(--book-page-bg)] sm:min-h-[280px] md:min-h-0">
-          <BookImage
-            src={left.src}
-            alt=""
-            fill
-            className="object-contain object-center"
-            style={{ objectPosition: left.position }}
-            sizes="46vw"
-          />
-          {left.overlay}
-          {left.content}
-        </div>
-        <div className="book-spread-crease" aria-hidden />
+        <BookImage
+          src={right.src}
+          alt=""
+          fill
+          className="object-cover"
+          style={{ objectPosition: right.objectPosition ?? "50% 50%" }}
+          sizes="500px"
+        />
+        {right.children}
       </div>
-    </BookBoard>
+
+      {/* Left page — spine crease via borderRight */}
+      <div
+        style={{
+          position: "relative",
+          flex: "none",
+          width: 500,
+          height: 700,
+          overflow: "hidden",
+          borderRight: "1px solid rgba(0,0,0,0.07)"
+        }}
+      >
+        <BookImage
+          src={left.src}
+          alt=""
+          fill
+          className="object-cover"
+          style={{ objectPosition: left.objectPosition ?? "50% 50%" }}
+          sizes="500px"
+        />
+        {left.children}
+      </div>
+    </div>
   );
 }

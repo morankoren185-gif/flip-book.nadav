@@ -38,7 +38,10 @@ const NAV_RESERVE_PX = 210;
 function entryWidth(idx: number): number {
   const e = bookData[idx];
   if (!e) return FLIP_PAGE_WIDTH_PX;
-  return e.type === "spread" ? SPREAD_PAGE_WIDTH_PX : FLIP_PAGE_WIDTH_PX;
+  // cover and back-cover = 500 px (closed book appearance)
+  // every other entry = 1000 px (open book: blank right + illustrated left)
+  if (e.type === "cover" || e.type === "back-cover") return FLIP_PAGE_WIDTH_PX;
+  return SPREAD_PAGE_WIDTH_PX;
 }
 
 const MAIN_ANIM_NEXT = "rtlFlipSheetYNext";
@@ -107,9 +110,8 @@ export const BookFlipBook = forwardRef<BookFlipBookHandle, BookFlipBookProps>(
      * the first render, momentarily showing a 1000-px spread at full size on
      * narrow screens before the effect fires.
      */
-    const [availW, setAvailW] = useState(() =>
-      typeof window !== "undefined" ? window.innerWidth : 0
-    );
+    const [availW, setAvailW] = useState(0);
+    const [measured, setMeasured] = useState(false);
     const [availH, setAvailH] = useState(() =>
       typeof window !== "undefined" ? window.innerHeight - NAV_RESERVE_PX : 700
     );
@@ -120,6 +122,7 @@ export const BookFlipBook = forwardRef<BookFlipBookHandle, BookFlipBookProps>(
         if (!el) return;
         setAvailW(el.clientWidth);
         setAvailH(window.innerHeight - NAV_RESERVE_PX);
+        setMeasured(true);
       };
 
       measure();
@@ -146,12 +149,19 @@ export const BookFlipBook = forwardRef<BookFlipBookHandle, BookFlipBookProps>(
         : 1;
     // ────────────────────────────────────────────────────────────────────
 
-    /** Natural-size pages — SpreadPageFrame for spreads, PageFrame for singles */
+    /**
+     * Natural-size pages.
+     * cover / back-cover → PageFrame (500 px, closed book)
+     * everything else    → SpreadPageFrame (1000 px, open book)
+     */
     const pagesNatural = useMemo(
       () =>
         bookData.map((page) => {
           const p = page as BookPage;
-          const Frame = p.type === "spread" ? SpreadPageFrame : PageFrame;
+          const Frame =
+            p.type === "cover" || p.type === "back-cover"
+              ? PageFrame
+              : SpreadPageFrame;
           return <Frame key={pageKey(p)}>{renderBookPage(p)}</Frame>;
         }),
       []
@@ -159,14 +169,18 @@ export const BookFlipBook = forwardRef<BookFlipBookHandle, BookFlipBookProps>(
 
     /**
      * Leaf pages for the turning face.
-     * Spreads use SpreadPageFrame (1000 px) so the overflow-hidden + flex
-     * alignment in turning-sheet__front can crop to the correct 500 px half.
+     * Same frame logic as pagesNatural: 1000 px for all story entries so
+     * the overflow-hidden + flex-end crop in turning-sheet__front exposes
+     * the correct illustrated right half during a next-flip.
      */
     const pagesLeaf = useMemo(
       () =>
         bookData.map((page) => {
           const p = page as BookPage;
-          const Frame = p.type === "spread" ? SpreadPageFrame : PageFrame;
+          const Frame =
+            p.type === "cover" || p.type === "back-cover"
+              ? PageFrame
+              : SpreadPageFrame;
           return <Frame key={pageKey(p)}>{renderBookPage(p)}</Frame>;
         }),
       []
@@ -330,6 +344,20 @@ export const BookFlipBook = forwardRef<BookFlipBookHandle, BookFlipBookProps>(
           : `static | idx=${displayIndex} | vw=${viewWidth} | scale=${scale.toFixed(2)} | type=${bookData[displayIndex]?.type}`
       : "";
 
+    if (!measured) {
+      return (
+        <div ref={outerRef} className="book-scale-outer w-full self-stretch">
+          <div
+            style={{
+              width: "100%",
+              height: FLIP_PAGE_HEIGHT_PX,
+              opacity: 0
+            }}
+          />
+        </div>
+      );
+    }
+
     return (
       /*
        * ── Layout: three-layer responsive structure ──────────────────────
@@ -454,10 +482,15 @@ export const BookFlipBook = forwardRef<BookFlipBookHandle, BookFlipBookProps>(
                           <div
                             className={`turning-sheet__front turning-sheet__front--${phase} absolute inset-0 overflow-hidden`}
                             style={
-                              /* For a spread turning as next, show the right half;
-                                 for prev show the left half — achieved by aligning
-                                 the 1000-px spread content to the hinge side. */
-                              bookData[displayIndex]?.type === "spread"
+                              /*
+                               * All 1000-px entries (single story pages AND spreads)
+                               * need half-cropping inside the 500-px turning leaf:
+                               *   next → show right half (illustrated page or right spread)
+                               *   prev → show left half (blank paper or left spread)
+                               * cover / back-cover are 500 px so no crop is needed.
+                               */
+                              bookData[displayIndex]?.type !== "cover" &&
+                              bookData[displayIndex]?.type !== "back-cover"
                                 ? phase === "next"
                                   ? { display: "flex", justifyContent: "flex-end" }
                                   : { display: "flex", justifyContent: "flex-start" }

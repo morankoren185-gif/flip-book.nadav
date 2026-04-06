@@ -1,13 +1,17 @@
 import type { BookPageSingle } from "@/types/book";
-import { SingleArtPage } from "@/components/templates/shells";
+import {
+  SinglePageFrame,
+  textStyle,
+  type TextLayout
+} from "@/components/templates/shells";
 import { TemplateText } from "@/components/templates/TemplateText";
 
 export function Page20Template({ page }: { page: BookPageSingle }) {
   return (
-    <SingleArtPage page={page} objectPosition="46% 44%">
-      <div className="absolute bottom-[6%] end-[5%] z-10 max-w-[min(16rem,47%)]">
+    <SinglePageFrame src={page.image} objectPosition="50% 50%">
+      <div style={textStyle(page.layout as TextLayout)}>
         <TemplateText>{page.text}</TemplateText>
       </div>
-    </SingleArtPage>
+    </SinglePageFrame>
   );
 }

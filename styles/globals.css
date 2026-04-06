@@ -336,7 +336,7 @@ button {
  * ─────────────────────────────────────────────────────────────
  */
 .rtl-book-viewport {
-  --rtl-flip-ms: 1150ms;
+  --rtl-flip-ms: 1200ms;
   /* Very soft radius — real books have very slightly rounded corner stacks */
   border-radius: 4px 10px 10px 4px;
   overflow: hidden;
@@ -346,13 +346,45 @@ button {
    * visible flip.  A CSS transition would create a lag between the logical
    * width (React state) and the visual width, causing a mismatch frame.
    */
-  /*
-   * Page-resting shadow: heavier bottom + right (binding side).
-   * Mimics a book lying on a warm surface under soft overhead light.
-   */
   box-shadow:
-    var(--book-page-shadow),
-    inset 0 0 0 1px rgba(255, 252, 245, 0.12);
+    /* Left page drop shadow */
+    -8px 6px 24px -4px rgba(34, 28, 20, 0.22),
+    /* Right page drop shadow */
+    8px 6px 24px -4px rgba(34, 28, 20, 0.18),
+    /* Bottom contact shadow — book on table */
+    0 32px 64px -18px rgba(34, 28, 20, 0.38),
+    0 10px 24px rgba(34, 28, 20, 0.16),
+    /* Top edge highlight — paper rim */
+    0 -1px 0 rgba(255, 254, 248, 0.35);
+}
+
+/* Paper stack — visible page edges on right and bottom */
+.book-scale-presenter::before,
+.book-scale-presenter::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.book-scale-presenter::before {
+  top: 3px;
+  right: -4px;
+  bottom: -3px;
+  left: 4px;
+  background: linear-gradient(to bottom, #f0ebe0 0%, #e8e2d6 100%);
+  border-radius: 4px 10px 10px 4px;
+  z-index: -1;
+}
+
+.book-scale-presenter::after {
+  top: 6px;
+  right: -7px;
+  bottom: -6px;
+  left: 7px;
+  background: linear-gradient(to bottom, #e8e2d6 0%, #ddd7cc 100%);
+  border-radius: 4px 10px 10px 4px;
+  z-index: -2;
 }
 
 .rtl-book-viewport--flipping {
@@ -514,21 +546,24 @@ button {
   content: "";
   position: absolute;
   left: 50%;
-  top: 1.5%;
-  bottom: 1.5%;
-  width: 18px;
+  top: 0;
+  bottom: 0;
+  width: 12px;
   transform: translateX(-50%);
   background: linear-gradient(
     90deg,
-    rgba(255, 252, 246, 0.04) 0%,
-    rgba(44, 36, 24, 0.08) 38%,
-    rgba(44, 36, 24, 0.16) 50%,
-    rgba(44, 36, 24, 0.08) 62%,
-    rgba(255, 252, 246, 0.04) 100%
+    rgba(255, 252, 246, 0) 0%,
+    rgba(44, 36, 24, 0.06) 30%,
+    rgba(44, 36, 24, 0.18) 50%,
+    rgba(44, 36, 24, 0.06) 70%,
+    rgba(255, 252, 246, 0) 100%
   );
-  box-shadow: inset 0 0 12px rgba(34, 28, 20, 0.06);
-  border-radius: 2px;
-  opacity: 0.72;
+  box-shadow:
+    inset 1px 0 2px rgba(255, 252, 245, 0.2),
+    inset -1px 0 2px rgba(255, 252, 245, 0.2);
+  border-radius: 0;
+  opacity: 1;
+  z-index: 20;
 }
 
 .rtl-book-spine-line--flipping {
@@ -1150,6 +1185,22 @@ button {
   height: 700px;
 }
 
+/*
+ * New shell containers (SinglePageFrame / SpreadContinuousFrame /
+ * SpreadSplitFrame) are direct children of .book-leaf-*.
+ * Ensure they expand to fill the leaf and carry no board chrome.
+ */
+.book-leaf-single > div,
+.book-leaf-spread > div {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
 /* ── Strip BookBoard outer shell (padding, background, shadow, radius) ── */
 .book-leaf-single > .book-board,
 .book-leaf-spread > .book-board {
@@ -1233,6 +1284,7 @@ button {
 .book-scale-presenter {
   position: relative;
   margin: 0 auto;
+  border-radius: 4px 10px 10px 4px;
   /*
    * No transition here — the presenter dimensions are updated in the same
    * React commit as viewWidth/scale, so any delay would cause the visual
