@@ -34,6 +34,8 @@ export function renderBookPage(page: BookPage): ReactNode {
     case "page-01":
     case "page-04":
     case "page-05":
+    case "page-06":
+    case "page-07":
     case "page-08":
     case "page-11":
     case "page-12":
@@ -48,8 +50,6 @@ export function renderBookPage(page: BookPage): ReactNode {
       return <SinglePageTemplate page={page as BookPageSingle} />;
     case "spread-02-03":
       return <Spread0203Template page={page as BookPageSpread} />;
-    case "spread-06-07":
-      return <Spread0607Template page={page as BookPageSpread} />;
     case "spread-09-10":
       return <Spread0910Template page={page as BookPageSpread} />;
     case "spread-13-14":

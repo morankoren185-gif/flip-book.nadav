@@ -23,32 +23,41 @@ export function TemplateText({
         : "clamp(0.9rem,1.5vw,1.08rem)";
 
   return (
-    <p
-      lang="he"
+    <div
       style={{
-        margin: 0,
-        padding: 0,
-        fontFamily:
-          "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
-        fontSize,
-        fontWeight: 600,
-        lineHeight: 2.1,
-        letterSpacing: "0.02em",
-        color,
-        direction: "rtl",
-        textAlign: align,
-        whiteSpace: "pre-line",
-        textShadow: `
-          0 0 1.2em rgba(255,253,248,0.92),
-          0 0 0.5em rgba(255,255,253,0.95),
-          0 0 0.2em rgba(255,255,255,1),
-          0 1px 4px rgba(255,255,255,0.4),
-          0 0 22px rgba(255,252,246,0.45)
-        `,
-        ...style
+        background:
+          "radial-gradient(ellipse 110% 130%, rgba(255,252,246,0.88) 0%, rgba(255,252,246,0.65) 55%, transparent 78%)",
+        padding: "0.5em 0.8em",
+        borderRadius: "12px"
       }}
     >
-      {children}
-    </p>
+      <p
+        lang="he"
+        style={{
+          margin: 0,
+          padding: 0,
+          fontFamily:
+            "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
+          fontSize,
+          fontWeight: 600,
+          lineHeight: 2.1,
+          letterSpacing: "0.02em",
+          color,
+          direction: "rtl",
+          textAlign: align,
+          whiteSpace: "pre-line",
+          textShadow: `
+            0 0 1.2em rgba(255,253,248,0.92),
+            0 0 0.5em rgba(255,255,253,0.95),
+            0 0 0.2em rgba(255,255,255,1),
+            0 1px 4px rgba(255,255,255,0.4),
+            0 0 22px rgba(255,252,246,0.45)
+          `,
+          ...style
+        }}
+      >
+        {children}
+      </p>
+    </div>
   );
 }

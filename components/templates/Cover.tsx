@@ -14,15 +14,15 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         fill
         className="object-cover"
         style={{ objectPosition: "50% 42%" }}
-        sizes="500px"
+        sizes="600px"
         priority
       />
 
-      {/* Title — top */}
+      {/* Title — above character */}
       <div
         style={{
           position: "absolute",
-          top: "8%",
+          top: "5%",
           left: 0,
           right: 0,
           textAlign: "center",
@@ -47,12 +47,11 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         </h1>
       </div>
 
-      {/* Subtitle — middle */}
+      {/* Subtitle — above character */}
       <div
         style={{
           position: "absolute",
-          top: "50%",
-          transform: "translateY(-50%)",
+          top: "18%",
           left: 0,
           right: 0,
           textAlign: "center",

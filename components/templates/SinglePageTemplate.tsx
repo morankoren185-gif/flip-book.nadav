@@ -17,13 +17,25 @@ export function SinglePageTemplate({ page }: { page: BookPageSingle }) {
     );
   }
 
+  // Split text at double newline when a second layout is configured
+  const parts = cfg.text2Layout ? page.text.split(/\n\n/) : null;
+  const text1 = parts ? parts[0] : page.text;
+  const text2 = parts && parts.length > 1 ? parts.slice(1).join("\n\n") : null;
+
   return (
     <SinglePageFrame src={page.image} objectPosition={cfg.objectPosition}>
       <div style={textStyle(cfg.textLayout)}>
         <TemplateText size={cfg.textSize} color={cfg.textColor}>
-          {page.text}
+          {text1}
         </TemplateText>
       </div>
+      {cfg.text2Layout && text2 && (
+        <div style={textStyle(cfg.text2Layout)}>
+          <TemplateText size={cfg.textSize} color={cfg.textColor}>
+            {text2}
+          </TemplateText>
+        </div>
+      )}
     </SinglePageFrame>
   );
 }
