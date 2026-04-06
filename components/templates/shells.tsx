@@ -161,6 +161,8 @@ export function SpreadContinuousFrame({
 type SpreadHalf = {
   src: string;
   objectPosition?: string;
+  objectFit?: "cover" | "contain";
+  background?: string;
   children?: ReactNode;
 };
 
@@ -189,15 +191,18 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
           flex: "none",
           width: 500,
           height: 700,
-          overflow: "hidden"
+          overflow: "hidden",
+          backgroundColor: right.background
         }}
       >
         <BookImage
           src={right.src}
           alt=""
           fill
-          className="object-cover"
-          style={{ objectPosition: right.objectPosition ?? "50% 50%" }}
+          style={{
+            objectFit: right.objectFit ?? "cover",
+            objectPosition: right.objectPosition ?? "50% 50%"
+          }}
           sizes="500px"
         />
         {right.children}
@@ -211,15 +216,18 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
           width: 500,
           height: 700,
           overflow: "hidden",
-          borderRight: "1px solid rgba(0,0,0,0.07)"
+          borderRight: "1px solid rgba(0,0,0,0.07)",
+          backgroundColor: left.background
         }}
       >
         <BookImage
           src={left.src}
           alt=""
           fill
-          className="object-cover"
-          style={{ objectPosition: left.objectPosition ?? "50% 50%" }}
+          style={{
+            objectFit: left.objectFit ?? "cover",
+            objectPosition: left.objectPosition ?? "50% 50%"
+          }}
           sizes="500px"
         />
         {left.children}

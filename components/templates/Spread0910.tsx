@@ -7,7 +7,9 @@ export function Spread0910Template({ page }: { page: BookPageSpread }) {
     <SpreadSplitFrame
       right={{
         src: page.rightImage!,
-        objectPosition: "48% 52%",
+        objectPosition: "50% 40%",
+        objectFit: "contain",
+        background: "#f5ede0",
         children: (
           <div style={textStyle(page.rightLayout)}>
             <TemplateText>{page.rightText}</TemplateText>
@@ -16,7 +18,9 @@ export function Spread0910Template({ page }: { page: BookPageSpread }) {
       }}
       left={{
         src: page.leftImage!,
-        objectPosition: "52% 44%",
+        objectPosition: "50% 40%",
+        objectFit: "contain",
+        background: "#e8f0ea",
         children: (
           <div style={textStyle(page.leftLayout)}>
             <TemplateText>{page.leftText}</TemplateText>

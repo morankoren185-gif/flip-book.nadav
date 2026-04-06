@@ -2,9 +2,8 @@ import type { BookPageCover } from "@/types/book";
 import { CoverFrame } from "@/components/templates/shells";
 import { BookImage } from "@/components/BookImage";
 
-/** ~2× stronger luminous halo than `TemplateText` for cover legibility */
-const COVER_HALO =
-  "0 0 2.4em rgba(255,253,248,0.98), 0 0 1em rgba(255,255,253,0.98), 0 0 0.45em rgba(255,255,255,1), 0 2px 8px rgba(255,255,255,0.65), 0 0 44px rgba(255,252,246,0.75)";
+const TITLE_SHADOW =
+  "0 0 1.5em rgba(255,255,255,0.95), 0 0 0.6em rgba(255,255,255,1), 0 2px 6px rgba(255,255,255,0.7)";
 
 export function CoverTemplate({ page }: { page: BookPageCover }) {
   return (
@@ -19,10 +18,11 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         priority
       />
 
+      {/* Title — top */}
       <div
         style={{
           position: "absolute",
-          bottom: "22%",
+          top: "8%",
           left: 0,
           right: 0,
           textAlign: "center",
@@ -34,12 +34,12 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
           style={{
             margin: 0,
             fontFamily:
-              "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
-            fontSize: "clamp(1.6rem, 3.2vw, 2.2rem)",
-            fontWeight: 700,
+              "var(--font-secular-one), 'Secular One', 'Frank Ruhl Libre', serif",
+            fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)",
+            fontWeight: 400,
             color: "#1a1410",
             direction: "rtl",
-            textShadow: COVER_HALO,
+            textShadow: TITLE_SHADOW,
             lineHeight: 1.25
           }}
         >
@@ -47,10 +47,12 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         </h1>
       </div>
 
+      {/* Subtitle — middle */}
       <div
         style={{
           position: "absolute",
-          bottom: "13%",
+          top: "50%",
+          transform: "translateY(-50%)",
           left: 0,
           right: 0,
           textAlign: "center",
@@ -62,12 +64,12 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
           style={{
             margin: 0,
             fontFamily:
-              "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
+              "var(--font-frank-ruhl), 'Frank Ruhl Libre', serif",
             fontSize: "clamp(0.9rem, 1.6vw, 1.15rem)",
             fontWeight: 500,
             color: "#1a1410",
             direction: "rtl",
-            textShadow: COVER_HALO,
+            textShadow: TITLE_SHADOW,
             lineHeight: 1.5
           }}
         >
@@ -75,6 +77,7 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         </p>
       </div>
 
+      {/* Author — bottom */}
       <div
         style={{
           position: "absolute",
@@ -90,13 +93,13 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
           style={{
             margin: 0,
             fontFamily:
-              "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
+              "var(--font-frank-ruhl), 'Frank Ruhl Libre', serif",
             fontSize: "clamp(0.76rem, 1.2vw, 0.9rem)",
             fontWeight: 500,
             color: "#1a1410",
             opacity: 0.8,
             direction: "rtl",
-            textShadow: COVER_HALO
+            textShadow: TITLE_SHADOW
           }}
         >
           {page.author}
