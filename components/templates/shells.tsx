@@ -199,7 +199,6 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
           src={right.src}
           alt=""
           fill
-          className={right.objectFit === "contain" ? undefined : "object-cover"}
           style={{
             objectFit: right.objectFit ?? "cover",
             objectPosition: right.objectPosition ?? "50% 50%"
@@ -225,7 +224,6 @@ export function SpreadSplitFrame({ right, left }: SpreadSplitFrameProps) {
           src={left.src}
           alt=""
           fill
-          className={left.objectFit === "contain" ? undefined : "object-cover"}
           style={{
             objectFit: left.objectFit ?? "cover",
             objectPosition: left.objectPosition ?? "50% 50%"

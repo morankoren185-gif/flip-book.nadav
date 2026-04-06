@@ -29,7 +29,7 @@ export function TemplateText({
         margin: 0,
         padding: 0,
         fontFamily:
-          "var(--font-frank-ruhl), var(--font-secular), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
+          "var(--font-frank-ruhl), var(--font-secular-one), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
         fontSize,
         fontWeight: 600,
         lineHeight: 2.1,

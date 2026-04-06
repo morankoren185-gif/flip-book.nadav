@@ -387,7 +387,7 @@ export const BookFlipBook = forwardRef<BookFlipBookHandle, BookFlipBookProps>(
                 {
                   width: viewWidth,
                   height: h,
-                  perspective: 2800,
+                  perspective: 1800,
                   perspectiveOrigin: perspOrigin,
                   ["--rtl-flip-ms" as string]: `${FLIP_MS}ms`
                 } as CSSProperties
