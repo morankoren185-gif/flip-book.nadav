@@ -2,10 +2,6 @@ import type { BookPageCover } from "@/types/book";
 import { CoverFrame } from "@/components/templates/shells";
 import { BookImage } from "@/components/BookImage";
 
-/** ~2× stronger luminous halo than `TemplateText` for cover legibility */
-const COVER_HALO =
-  "0 0 2.4em rgba(255,253,248,0.98), 0 0 1em rgba(255,255,253,0.98), 0 0 0.45em rgba(255,255,255,1), 0 2px 8px rgba(255,255,255,0.65), 0 0 44px rgba(255,252,246,0.75)";
-
 export function CoverTemplate({ page }: { page: BookPageCover }) {
   return (
     <CoverFrame>
@@ -13,90 +9,81 @@ export function CoverTemplate({ page }: { page: BookPageCover }) {
         src={page.image}
         alt={page.title}
         fill
-        className="object-cover"
-        style={{ objectPosition: "50% 42%" }}
+        style={{ objectFit: "contain", objectPosition: "50% 58%" }}
         sizes="500px"
         priority
       />
 
+      {/* Title — top area, large display Hebrew font */}
       <div
         style={{
           position: "absolute",
-          bottom: "22%",
-          left: 0,
-          right: 0,
+          top: "6%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "88%",
           textAlign: "center",
-          zIndex: 10,
-          padding: "0 8%"
+          direction: "rtl",
+          zIndex: 10
         }}
       >
         <h1
           style={{
             margin: 0,
             fontFamily:
-              "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
-            fontSize: "clamp(1.6rem, 3.2vw, 2.2rem)",
+              "var(--font-secular), 'Secular One', var(--font-frank-ruhl), 'Frank Ruhl Libre', serif",
+            fontSize: "clamp(1.8rem, 3.8vw, 2.6rem)",
             fontWeight: 700,
+            lineHeight: 1.2,
             color: "#1a1410",
-            direction: "rtl",
-            textShadow: COVER_HALO,
-            lineHeight: 1.25
+            letterSpacing: "0.01em",
+            textShadow: `
+            0 0 1.5em rgba(255,253,248,0.98),
+            0 0 0.6em rgba(255,255,253,1),
+            0 2px 8px rgba(255,255,255,0.6)
+          `
           }}
         >
           {page.title}
         </h1>
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          bottom: "13%",
-          left: 0,
-          right: 0,
-          textAlign: "center",
-          zIndex: 10,
-          padding: "0 8%"
-        }}
-      >
         <p
           style={{
-            margin: 0,
+            margin: "10px 0 0",
             fontFamily:
-              "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
-            fontSize: "clamp(0.9rem, 1.6vw, 1.15rem)",
-            fontWeight: 500,
-            color: "#1a1410",
-            direction: "rtl",
-            textShadow: COVER_HALO,
-            lineHeight: 1.5
+              "var(--font-frank-ruhl), 'Frank Ruhl Libre', serif",
+            fontSize: "clamp(0.82rem, 1.6vw, 1rem)",
+            fontWeight: 400,
+            color: "#3a3028",
+            lineHeight: 1.5,
+            textShadow: "0 0 1em rgba(255,253,248,0.95)"
           }}
         >
           {page.subtitle}
         </p>
       </div>
 
+      {/* Author — bottom */}
       <div
         style={{
           position: "absolute",
-          bottom: "6%",
-          left: 0,
-          right: 0,
+          bottom: "5%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "80%",
           textAlign: "center",
-          zIndex: 10,
-          padding: "0 8%"
+          direction: "rtl",
+          zIndex: 10
         }}
       >
         <p
           style={{
             margin: 0,
             fontFamily:
-              "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
-            fontSize: "clamp(0.76rem, 1.2vw, 0.9rem)",
-            fontWeight: 500,
-            color: "#1a1410",
-            opacity: 0.8,
-            direction: "rtl",
-            textShadow: COVER_HALO
+              "var(--font-frank-ruhl), 'Frank Ruhl Libre', serif",
+            fontSize: "clamp(0.7rem, 1.3vw, 0.85rem)",
+            color: "#5a5048",
+            opacity: 0.85,
+            textShadow: "0 0 0.8em rgba(255,253,248,0.9)"
           }}
         >
           {page.author}

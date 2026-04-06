@@ -340,6 +340,7 @@ button {
   /* Very soft radius — real books have very slightly rounded corner stacks */
   border-radius: 4px 10px 10px 4px;
   overflow: hidden;
+  transform-style: preserve-3d;
   /*
    * NO width transition here.
    * viewWidth only changes in finishFlip (post-animation), never during a
@@ -1045,11 +1046,11 @@ button {
   transform: translateZ(1.2px);
   border-radius: 2px;
   box-shadow:
-    inset 0 0 0 1px rgba(44, 36, 24, 0.085),
-    inset -14px 0 30px rgba(44, 36, 24, 0.075),
-    inset 12px 0 20px rgba(255, 252, 245, 0.34),
-    -4px 0 8px rgba(0, 0, 0, 0.055),
-    1px 0 0 rgba(255, 255, 255, 0.38);
+    inset 0 0 0 1px rgba(44, 36, 24, 0.1),
+    inset -20px 0 40px rgba(44, 36, 24, 0.12),
+    inset 16px 0 28px rgba(255, 252, 245, 0.4),
+    -6px 0 14px rgba(0, 0, 0, 0.1),
+    2px 0 0 rgba(255, 255, 255, 0.45);
 }
 
 .turning-sheet__front::after {
@@ -1084,22 +1085,19 @@ button {
   transform: rotateY(180deg) translateZ(0.75px);
   border-radius: 2px;
   background:
-    linear-gradient(
-      168deg,
-      rgba(255, 248, 236, 0.08) 0%,
-      transparent 45%
-    ),
+    linear-gradient(168deg, rgba(255, 248, 236, 0.12) 0%, transparent 45%),
     linear-gradient(
       148deg,
-      #b8ae9c 0%,
-      #d8d0c2 32%,
-      #c9bfb0 58%,
-      #a69b8c 100%
+      #c8bfb0 0%,
+      #ddd6c8 28%,
+      #e8e0d2 50%,
+      #d4cbbe 72%,
+      #b8ae9c 100%
     );
   box-shadow:
-    inset 0 0 48px rgba(44, 36, 24, 0.18),
-    inset 16px 0 36px rgba(0, 0, 0, 0.08),
-    inset -8px 0 22px rgba(255, 252, 245, 0.1);
+    inset 0 0 60px rgba(44, 36, 24, 0.22),
+    inset 20px 0 44px rgba(0, 0, 0, 0.1),
+    inset -10px 0 28px rgba(255, 252, 245, 0.14);
 }
 
 .turning-sheet__highlight {
@@ -1285,6 +1283,8 @@ button {
   position: relative;
   margin: 0 auto;
   border-radius: 4px 10px 10px 4px;
+  filter: drop-shadow(0 28px 40px rgba(34, 28, 20, 0.28))
+    drop-shadow(0 6px 12px rgba(34, 28, 20, 0.16));
   /*
    * No transition here — the presenter dimensions are updated in the same
    * React commit as viewWidth/scale, so any delay would cause the visual

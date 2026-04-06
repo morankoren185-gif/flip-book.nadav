@@ -17,10 +17,10 @@ export function TemplateText({
 }: TemplateTextProps) {
   const fontSize =
     size === "sm"
-      ? "clamp(0.72rem,1.1vw,0.82rem)"
+      ? "clamp(0.82rem, 1.3vw, 0.95rem)"
       : size === "lg"
-        ? "clamp(0.88rem,1.55vw,1.1rem)"
-        : "clamp(0.78rem,1.28vw,0.92rem)";
+        ? "clamp(1rem, 1.8vw, 1.25rem)"
+        : "clamp(0.9rem, 1.5vw, 1.08rem)";
 
   return (
     <p
@@ -29,9 +29,9 @@ export function TemplateText({
         margin: 0,
         padding: 0,
         fontFamily:
-          "var(--font-frank-ruhl), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
+          "var(--font-frank-ruhl), var(--font-secular), 'Frank Ruhl Libre', 'Secular One', 'David Libre', serif",
         fontSize,
-        fontWeight: 500,
+        fontWeight: 600,
         lineHeight: 2.1,
         letterSpacing: "0.02em",
         color,
